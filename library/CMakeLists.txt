@@ -8,5 +8,5 @@ add_library(fluviussm SHARED lib/parser.c lib/parser.h)
 add_executable(fluvisussmapp sprite/main.c)
 target_link_libraries(fluvisussmapp fluviussm)
 
-add_executable(port_reader target/read_port.c)
+add_executable(port_reader executables/read_port.c)
 target_link_libraries(port_reader fluviussm)
