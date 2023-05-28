@@ -67,14 +67,16 @@ int main()
     set_interface_attribs(fd, B115200);
 
 
+    FILE* pFile2 = fopen("log.txt", "a");
+
     while (1){
         char read_buf [1024];
         memset(&read_buf, '\0', sizeof(read_buf));
         int num_bytes = read(fd, &read_buf, sizeof(read_buf));
         //printf("Amount of bytes: %d\n", num_bytes);
-        for (int i = 0; i < num_bytes ; ++i) {
-            printf("%c", i);
-        }
+        char to_write [num_bytes];
+        memccpy(to_write,read_buf,0,num_bytes);
+        int results = fputs(to_write, pFile2);
 
     }
 
