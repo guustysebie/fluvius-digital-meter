@@ -71,11 +71,9 @@ int main()
         char read_buf [1024];
         memset(&read_buf, '\0', sizeof(read_buf));
         int num_bytes = read(fd, &read_buf, sizeof(read_buf));
-        printf("Amount of bytes: %d\n", num_bytes);
+        //printf("Amount of bytes: %d\n", num_bytes);
         for (int i = 0; i < num_bytes ; ++i) {
-            if(read_buf[i] == '/'){
-                printf("Found start of obj at idx: %d \n", i);
-            }
+            printf("%c", i);
         }
 
     }
