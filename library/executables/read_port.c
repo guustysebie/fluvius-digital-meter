@@ -78,6 +78,7 @@ int main()
     // how long does it block for?) depends on the configuration
     // settings above, specifically VMIN and VTIME
     int num_bytes = read(fd, &read_buf, sizeof(read_buf));
+    printf("Amount of bytes: %d", num_bytes);
     for (int i = 0; i < num_bytes ; ++i) {
         for (int j = 0; j < 20 ; ++j) {
             i++;
