@@ -67,28 +67,19 @@ int main()
     set_interface_attribs(fd, B115200);
 
 
-    char read_buf [1024];
-
-    // Normally you wouldn't do this memset() call, but since we will just receive
-    // ASCII data for this example, we'll set everything to 0 so we can
-    // call printf() easily.
-    memset(&read_buf, '\0', sizeof(read_buf));
-
-    // Read bytes. The behaviour of read() (e.g. does it block?,
-    // how long does it block for?) depends on the configuration
-    // settings above, specifically VMIN and VTIME
-    int num_bytes = read(fd, &read_buf, sizeof(read_buf));
-    printf("Amount of bytes: %d", num_bytes);
-    for (int i = 0; i < num_bytes ; ++i) {
-        for (int j = 0; j < 20 ; ++j) {
-            i++;
-            if(i > num_bytes){
-                break;
+    while (1){
+        char read_buf [1024];
+        memset(&read_buf, '\0', sizeof(read_buf));
+        int num_bytes = read(fd, &read_buf, sizeof(read_buf));
+        printf("Amount of bytes: %d\n", num_bytes);
+        for (int i = 0; i < num_bytes ; ++i) {
+            if(read_buf[i] == '/'){
+                printf("Found start of obj at idx: %d \n", i);
             }
-            printf("%x ", read_buf[i]);
         }
-        printf("\n");
+
     }
+
 
 
 
