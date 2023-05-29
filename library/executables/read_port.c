@@ -74,7 +74,7 @@ int main()
         char read_buf [2048];
         memset(&read_buf, '\0', sizeof(read_buf));
         int num_bytes = read(fd, &read_buf, sizeof(read_buf));
-        //printf("Amount of bytes: %d\n", num_bytes);
+        printf("Amount of bytes: %d\n", num_bytes);
         char to_write [num_bytes];
         memccpy(to_write,read_buf,0,num_bytes);
         int results = fputs(to_write, pFile2);
