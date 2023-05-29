@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <dsmr/parser.h>
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
@@ -70,14 +71,14 @@ int main()
     FILE* pFile2 = fopen("log.txt", "a");
 
     while (1){
-        char read_buf [1024];
+        char read_buf [2048];
         memset(&read_buf, '\0', sizeof(read_buf));
         int num_bytes = read(fd, &read_buf, sizeof(read_buf));
         //printf("Amount of bytes: %d\n", num_bytes);
         char to_write [num_bytes];
         memccpy(to_write,read_buf,0,num_bytes);
         int results = fputs(to_write, pFile2);
-
+        parse_data(read_buf,num_bytes);
     }
 
 
