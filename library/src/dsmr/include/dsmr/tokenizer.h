@@ -25,6 +25,8 @@ void tokenizer_seek(Tokenizer *tokenizer, size_t idx);
 
 int tokenizer_has_next(Tokenizer *tokenizer);
 
+int tokenizer_is_at_end(Tokenizer *tokenizer);
+
 char tokenizer_next_char(Tokenizer *tokenizer);
 
 #endif //FLUVIUSSM_TOKENIZER_H

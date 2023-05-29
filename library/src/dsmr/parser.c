@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
 #include "dsmr/parser.h"
 #include "dsmr/tokenizer.h"
 
@@ -43,6 +44,7 @@ void dump_telegram(t_telegram *telegram) {
         printf("%c", telegram->identification[i]);
     }
     printf("\n");
+
 
 }
 
@@ -88,37 +90,48 @@ void parse_data(char *data, size_t length) {
             tokenizer_next_char(&tokenizer);
             tokenizer_next_char(&tokenizer);
             int ctr2 = 0;
-            char dataBuffer[256] = {'\0'};
+            char dataBuffer[1024] = {'\0'};
             while (1) {
+                if (!tokenizer_has_next(&tokenizer)) {
+                    printf("Current idx: %zu\n", tokenizer.current_idx);
+                    break;
+                }
                 char token = tokenizer_next_char(&tokenizer);
                 if (token == '!') {
                     break;
                 }
+
+                if(ctr2 >= 1024){
+                    printf("BIng");
+                    exit(420);
+                }
+
                 dataBuffer[ctr2] = token;
                 ctr2++;
                 if (token == '\r' && tokenizer_next_char(&tokenizer) == '\n') {
                     //discard new line data
                     tokenizer_next_char(&tokenizer);
                     int validLine = 0;
-                    for (int i = 0; i < 256; ++i) {
+                    for (int i = 0; i < 1024; ++i) {
                         if (dataBuffer[i] == ':') {
                             validLine = 1;
                             break;
                         }
                     }
                     if (validLine == 1) {
-                        for (int i = 0; i < 256; ++i) {
+                        for (int i = 0; i < 1024; ++i) {
                             printf("%c", dataBuffer[i]);
                         }
                         printf("\n");
                     }
-                    memset(dataBuffer, '\0', 256);
+                    memset(dataBuffer, '\0', 1023);
+                    ctr2 =0;
                 }
             }
-            dump_telegram(&telegram);
-            printf("\n");
+            // dump_telegram(&telegram);
         }
     }
+    printf("Out of while\n");
 }
 
 void test_data() {

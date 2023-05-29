@@ -25,14 +25,15 @@ int main() {
     if (!buffer) fclose(fp), fputs("memory alloc fails", stderr), exit(1);
 
 /* copy the file into the buffer */
-    if (1 != fread(buffer, lSize, 1, fp))
+    if (1 != fread(buffer, lSize, 1, fp)){
         fclose(fp), free(buffer), fputs("entire read fails", stderr), exit(1);
+    }
 
+    fclose(fp);
     /* do your work here, buffer is a string contains the whole text */
     parse_data(buffer,lSize);
 
-
-    fclose(fp);
+    printf("After while\n");
     free(buffer);
 
 
