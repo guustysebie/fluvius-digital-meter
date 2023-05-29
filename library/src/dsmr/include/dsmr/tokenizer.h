@@ -13,7 +13,7 @@
 
 
 typedef struct Tokenizer {
-    char *data;
+    const char *data;
     size_t length;
     size_t current_idx;
 } Tokenizer;

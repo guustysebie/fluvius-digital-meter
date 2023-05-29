@@ -3,6 +3,7 @@
 //
 
 #include <stdio.h>
+#include <ctype.h>
 #include "dsmr/parser.h"
 #include "dsmr/tokenizer.h"
 
@@ -12,6 +13,7 @@
 typedef struct Telegram {
     char model_specification[3];
     char identification[SPECIFICATION_CAPACITY];
+    char data[2024];
 } t_telegram;
 
 void dump_telegram(t_telegram *telegram) {
@@ -27,12 +29,22 @@ void dump_telegram(t_telegram *telegram) {
         printf("%c", telegram->identification[i]);
     }
     printf("\n");
+    printf("Data: ");
+    for (int i = 0; i < 2024; ++i) {
+        if (telegram->data[i] == '\0') {
+            break;
+        }
+        printf("%c", telegram->data[i]);
+    }
+    printf("\n");
+
 }
 
 t_telegram init_telegram() {
     t_telegram telegram = {
             .model_specification={'\0'},
-            .identification ={'\0'}
+            .identification ={'\0'},
+            .data ={'\0'}
     };
     return telegram;
 }
@@ -70,15 +82,19 @@ void parse_data(char *data, size_t length) {
             tokenizer_next_char(&tokenizer);
             tokenizer_next_char(&tokenizer);
             printf("Start data readout: \n");
-            while (1){
+            int ctr2 = 0;
+            while (1) {
                 char token = tokenizer_next_char(&tokenizer);
-                if(token== '!'){
+                if (token == '!') {
                     break;
                 }
-                if(token != '\n' ){
-                    printf("%c", token);
+                if (isprint(token)) {
+                    telegram.data[ctr2] = token;
+                    ctr2++;
                 }
             }
+
+
             printf("\n");
             dump_telegram(&telegram);
 

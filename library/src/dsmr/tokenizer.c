@@ -14,7 +14,7 @@ Tokenizer tokenizer_init(const char *data, size_t length) {
     return tokenizer;
 }
 
-void tokenizer_seek(Tokenizer *tokenizer, size_t idx){
+void tokenizer_seek(Tokenizer *tokenizer, size_t idx) {
     tokenizer->current_idx = idx;
 }
 
