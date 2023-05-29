@@ -22,3 +22,5 @@ We have  to take into account several different
 
 
 https://www.netbeheernederland.nl/_upload/Files/Slimme_meter_15_a727fce1f1.pdf
+
+Page 15 contains telegram layout thing

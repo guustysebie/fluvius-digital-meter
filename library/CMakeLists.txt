@@ -1,12 +1,17 @@
 cmake_minimum_required(VERSION 3.20)
-project(fluviussm C)
+project(fluviussm C CXX)
 
 set(CMAKE_C_STANDARD 99)
 
-add_library(fluviussm SHARED lib/parser.c lib/parser.h)
 
-add_executable(fluvisussmapp sprite/main.c)
-target_link_libraries(fluvisussmapp fluviussm)
 
-add_executable(port_reader executables/read_port.c)
-target_link_libraries(port_reader fluviussm)
+enable_testing()
+add_subdirectory(tests)
+add_subdirectory(executables)
+add_subdirectory(sprite)
+add_subdirectory(src)
+
+
+
+
+
