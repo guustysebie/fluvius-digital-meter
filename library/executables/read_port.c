@@ -70,7 +70,7 @@ int main()
 
     FILE* pFile2 = fopen("log.txt", "a");
     int current_bytes = 0;
-    char read_buf [2048];
+    char read_buf [4096];
     int offset=0;
     memset(&read_buf, '\0', sizeof(read_buf));
     while (1){
@@ -82,7 +82,7 @@ int main()
             read_buf[offset] = single_read_buf[i];
             offset++;
         }
-        if(current_bytes >= 1024 ){
+        if(current_bytes >= 4000 ){
             printf("Threshold passed parsing data:  %d bytes\n", current_bytes);
             parse_data(read_buf,num_bytes);
             current_bytes = 0;
