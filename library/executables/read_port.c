@@ -68,7 +68,6 @@ int main()
     set_interface_attribs(fd, B115200);
 
 
-    FILE* pFile2 = fopen("log.txt", "a");
     int current_bytes = 0;
     char read_buf [4096];
     int offset=0;
@@ -88,7 +87,10 @@ int main()
                 ctr++;
             }
         }
-        if(ctr > 1){
+        if(ctr > 3){
+            FILE* pFile2 = fopen("frames.txt", "a");
+            fputs(read_buf, pFile2);
+            fputs("\n=============================================\n",pFile2);
             printf("Threshold passed parsing data:  %d bytes\n", current_bytes);
             parse_data(read_buf,num_bytes);
             current_bytes = 0;
@@ -100,7 +102,6 @@ int main()
 
        // char to_write [num_bytes];
        // memccpy(to_write,read_buf,0,num_bytes);
-       // fputs(to_write, pFile2);
     }
 
 
