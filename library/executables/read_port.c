@@ -69,16 +69,33 @@ int main()
 
 
     FILE* pFile2 = fopen("log.txt", "a");
-
+    int current_bytes = 0;
+    char read_buf [2048];
+    int offset=0;
+    memset(&read_buf, '\0', sizeof(read_buf));
     while (1){
-        char read_buf [2048];
-        memset(&read_buf, '\0', sizeof(read_buf));
-        int num_bytes = read(fd, &read_buf, sizeof(read_buf));
+
+        char single_read_buf [1024];
+        int num_bytes = read(fd, &single_read_buf, sizeof(single_read_buf));
         printf("Amount of bytes: %d\n", num_bytes);
-        char to_write [num_bytes];
-        memccpy(to_write,read_buf,0,num_bytes);
-        int results = fputs(to_write, pFile2);
-        parse_data(read_buf,num_bytes);
+        current_bytes += num_bytes;
+        for (int i = 0; i < num_bytes; ++i) {
+            read_buf[offset] = single_read_buf[i];
+            offset++;
+        }
+        if(current_bytes >= 1024 ){
+            printf("Threshold passed parsing data\n");
+            parse_data(read_buf,num_bytes);
+            current_bytes = 0;
+            memset(&read_buf, '\0', sizeof(read_buf));
+            offset = 0;
+        }
+
+
+
+       // char to_write [num_bytes];
+       // memccpy(to_write,read_buf,0,num_bytes);
+       // fputs(to_write, pFile2);
     }
 
 
