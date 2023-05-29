@@ -101,10 +101,6 @@ void parse_data(char *data, size_t length) {
                     break;
                 }
 
-                if(ctr2 >= 1024){
-                    printf("BIng");
-                    exit(420);
-                }
 
                 dataBuffer[ctr2] = token;
                 ctr2++;
@@ -128,10 +124,9 @@ void parse_data(char *data, size_t length) {
                     ctr2 =0;
                 }
             }
-            // dump_telegram(&telegram);
+             dump_telegram(&telegram);
         }
     }
-    printf("Out of while\n");
 }
 
 void test_data() {
