@@ -4,16 +4,30 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 #include "dsmr/parser.h"
 #include "dsmr/tokenizer.h"
 
 
 #define SPECIFICATION_CAPACITY 100
+#define DATA_CAPACITY 100
+
+typedef struct TelegramMeasurementEntry {
+    char value[100];
+    char unit[100];
+} t_telegram_measurement_entry;
+
+typedef struct TelegramData {
+    char first[100];
+    char channel[100];
+    char type[100];
+    t_telegram_measurement_entry entries[100];
+} t_telegram_data;
 
 typedef struct Telegram {
     char model_specification[3];
     char identification[SPECIFICATION_CAPACITY];
-    char data[2024];
+    t_telegram_data data[100];
 } t_telegram;
 
 void dump_telegram(t_telegram *telegram) {
@@ -27,14 +41,6 @@ void dump_telegram(t_telegram *telegram) {
             break;
         }
         printf("%c", telegram->identification[i]);
-    }
-    printf("\n");
-    printf("Data: ");
-    for (int i = 0; i < 2024; ++i) {
-        if (telegram->data[i] == '\0') {
-            break;
-        }
-        printf("%c", telegram->data[i]);
     }
     printf("\n");
 
@@ -81,23 +87,35 @@ void parse_data(char *data, size_t length) {
             tokenizer_next_char(&tokenizer);
             tokenizer_next_char(&tokenizer);
             tokenizer_next_char(&tokenizer);
-            printf("Start data readout: \n");
             int ctr2 = 0;
+            char dataBuffer[256] = {'\0'};
             while (1) {
                 char token = tokenizer_next_char(&tokenizer);
                 if (token == '!') {
                     break;
                 }
-                if (isprint(token)) {
-                    telegram.data[ctr2] = token;
-                    ctr2++;
+                dataBuffer[ctr2] = token;
+                ctr2++;
+                if (token == '\r' && tokenizer_next_char(&tokenizer) == '\n') {
+                    //discard new line data
+                    tokenizer_next_char(&tokenizer);
+                    int validLine = 0;
+                    for (int i = 0; i < 256; ++i) {
+                        if (dataBuffer[i] == ':') {
+                            validLine = 1;
+                            break;
+                        }
+                    }
+                    if (validLine == 1) {
+                        for (int i = 0; i < 256; ++i) {
+                            printf("%c", dataBuffer[i]);
+                        }
+                        printf("\n");
+                    }
+                    memset(dataBuffer, '\0', 256);
                 }
             }
-
-
-            printf("\n");
             dump_telegram(&telegram);
-
             printf("\n");
         }
     }

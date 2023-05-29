@@ -13,7 +13,7 @@ int main() {
     long lSize;
     char *buffer;
 
-    fp = fopen("/home/guust/projects/fluvius-digital-meter/data/readout_001.txt", "rb");
+    fp = fopen("/home/guust/projects/fluvius-digital-meter/data/readout_003.txt", "rb");
     if (!fp) perror("blah.txt"), exit(1);
 
     fseek(fp, 0L, SEEK_END);
