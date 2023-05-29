@@ -77,14 +77,13 @@ int main()
 
         char single_read_buf [1024];
         int num_bytes = read(fd, &single_read_buf, sizeof(single_read_buf));
-        printf("Amount of bytes: %d\n", num_bytes);
         current_bytes += num_bytes;
         for (int i = 0; i < num_bytes; ++i) {
             read_buf[offset] = single_read_buf[i];
             offset++;
         }
         if(current_bytes >= 1024 ){
-            printf("Threshold passed parsing data\n");
+            printf("Threshold passed parsing data:  %d bytes\n", current_bytes);
             parse_data(read_buf,num_bytes);
             current_bytes = 0;
             memset(&read_buf, '\0', sizeof(read_buf));
