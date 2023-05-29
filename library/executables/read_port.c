@@ -82,7 +82,13 @@ int main()
             read_buf[offset] = single_read_buf[i];
             offset++;
         }
-        if(current_bytes >= 4000 ){
+        int ctr =0;
+        for (int i = 0; i < 4096; ++i) {
+            if(read_buf[i] == '/') {
+                ctr++;
+            }
+        }
+        if(ctr > 1){
             printf("Threshold passed parsing data:  %d bytes\n", current_bytes);
             parse_data(read_buf,num_bytes);
             current_bytes = 0;
