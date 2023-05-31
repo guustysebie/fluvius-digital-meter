@@ -5,7 +5,6 @@
 
 #include <dsmr/tokenizer.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
 Tokenizer tokenizer_init(const char *data, size_t length) {

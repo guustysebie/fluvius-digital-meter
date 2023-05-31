@@ -5,8 +5,8 @@
 #ifndef FLUVIUSSM_TOKENIZER_H
 #define FLUVIUSSM_TOKENIZER_H
 
+#include <dsmr/types.h>
 
-#include <stddef.h>
 
 #define DSMR_TKNZR_START_COSEM_OBJ '/'
 #define DSMR_TKNZR_START_IDENTIFICATION_TOKEN '5'

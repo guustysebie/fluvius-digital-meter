@@ -3,33 +3,12 @@
 //
 
 #include <stdio.h>
-#include <ctype.h>
 #include <string.h>
-#include <stdlib.h>
 #include "dsmr/parser.h"
 #include "dsmr/tokenizer.h"
+#include "dsmr/types.h"
 
 
-#define SPECIFICATION_CAPACITY 100
-#define DATA_CAPACITY 100
-
-typedef struct TelegramMeasurementEntry {
-    char value[100];
-    char unit[100];
-} t_telegram_measurement_entry;
-
-typedef struct TelegramData {
-    char first[100];
-    char channel[100];
-    char type[100];
-    t_telegram_measurement_entry entries[100];
-} t_telegram_data;
-
-typedef struct Telegram {
-    char model_specification[3];
-    char identification[SPECIFICATION_CAPACITY];
-    t_telegram_data data[100];
-} t_telegram;
 
 void dump_telegram(t_telegram *telegram) {
     printf("Model specification: %c%c%c\n",
@@ -44,8 +23,6 @@ void dump_telegram(t_telegram *telegram) {
         printf("%c", telegram->identification[i]);
     }
     printf("\n");
-
-
 }
 
 t_telegram init_telegram() {
@@ -57,10 +34,6 @@ t_telegram init_telegram() {
     return telegram;
 }
 
-typedef struct ParsingResult {
-    int has_error;
-
-} t_parsing_result;
 
 
 void parse_data(char *data, size_t length) {
@@ -101,12 +74,9 @@ void parse_data(char *data, size_t length) {
                     break;
                 }
 
-
                 dataBuffer[ctr2] = token;
                 ctr2++;
                 if (token == '\r' && tokenizer_next_char(&tokenizer) == '\n') {
-                    //discard new line data
-                    tokenizer_next_char(&tokenizer);
                     int validLine = 0;
                     for (int i = 0; i < 1024; ++i) {
                         if (dataBuffer[i] == ':') {
@@ -120,7 +90,7 @@ void parse_data(char *data, size_t length) {
                         }
                         printf("\n");
                     }
-                    memset(dataBuffer, '\0', 1023);
+                    memset(dataBuffer, '\0', 1024);
                     ctr2 =0;
                 }
             }
@@ -131,4 +101,12 @@ void parse_data(char *data, size_t length) {
 
 void test_data() {
     printf("Hello from lib\n");
+}
+
+DSMR_Parser DSMR_parser_init(void) {
+    DSMR_Parser result;
+    for (int i = 0; i < DSMR_PARSER_CAPACITY; ++i) {
+        result.data_buffer[i] = '\0';
+    }
+    return result;
 }

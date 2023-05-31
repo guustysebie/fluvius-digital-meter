@@ -3,6 +3,7 @@
 //
 
 #define SERIALTERMINAL      "/dev/ttyUSB0"
+
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -12,8 +13,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-int set_interface_attribs(int fd, int speed)
-{
+int set_interface_attribs(int fd, int speed) {
     struct termios tty;
 
     if (tcgetattr(fd, &tty) < 0) {
@@ -21,8 +21,8 @@ int set_interface_attribs(int fd, int speed)
         return -1;
     }
 
-    cfsetospeed(&tty, (speed_t)speed);
-    cfsetispeed(&tty, (speed_t)speed);
+    cfsetospeed(&tty, (speed_t) speed);
+    cfsetispeed(&tty, (speed_t) speed);
 
     tty.c_cflag |= CLOCAL | CREAD;
     tty.c_cflag &= ~CSIZE;
@@ -53,8 +53,7 @@ int set_interface_attribs(int fd, int speed)
 }
 
 
-int main()
-{
+int main() {
     char *portname = SERIALTERMINAL;
     int fd;
     int wlen;
@@ -68,43 +67,51 @@ int main()
     set_interface_attribs(fd, B115200);
 
 
-    int current_bytes = 0;
-    char read_buf [4096];
-    int offset=0;
+    size_t current_bytes = 0;
+    char read_buf[4096];
+    int start_msg = -1;
+    int end_msg = -1;
+    int ctr = 0;
     memset(&read_buf, '\0', sizeof(read_buf));
-    while (1){
-
-        char single_read_buf [1024];
-        int num_bytes = read(fd, &single_read_buf, sizeof(single_read_buf));
+    printf("Starting to listen\n");
+    while (1) {
+        char single_read_buf[256];
+        size_t num_bytes = read(fd, &single_read_buf, sizeof(single_read_buf));
         current_bytes += num_bytes;
         for (int i = 0; i < num_bytes; ++i) {
-            read_buf[offset] = single_read_buf[i];
-            offset++;
-        }
-        int ctr =0;
-        for (int i = 0; i < 4096; ++i) {
-            if(read_buf[i] == '/') {
-                ctr++;
+            char new_char = single_read_buf[i];
+            if (new_char == '/') {
+                if (start_msg == -1) {
+                    start_msg = ctr + i;
+                } else {
+                    end_msg = ctr + i - 1;
+                }
             }
+            read_buf[ctr] = new_char;
+            ctr++;
         }
-        if(ctr > 3){
-            FILE* pFile2 = fopen("frames.txt", "a");
-            fputs(read_buf, pFile2);
-            fputs("\n=============================================\n",pFile2);
-            printf("Threshold passed parsing data:  %d bytes\n", current_bytes);
-            parse_data(read_buf,num_bytes);
-            current_bytes = 0;
+        if (end_msg > -1 && start_msg > -1) {
+            printf("\n=====================================================\n");
+            printf("Start msg: %d end msg: %d size of packet: %d\n", start_msg, end_msg, end_msg - start_msg);
+            int size =  end_msg -start_msg;
+            char data[size];
+            memset(&data, '\0', sizeof(data));
+            printf("Amount of bytes: %d\n",size);
+            int idx =0;
+            for (int i = start_msg; i < end_msg; ++i) {
+                data[idx] = read_buf[i];
+                idx++;
+            }
+            parse_data(data,size);
             memset(&read_buf, '\0', sizeof(read_buf));
-            offset = 0;
+
+            start_msg = -1;
+            end_msg = -1;
+            ctr =0;
         }
 
 
-
-       // char to_write [num_bytes];
-       // memccpy(to_write,read_buf,0,num_bytes);
     }
-
-
 
 
 }
