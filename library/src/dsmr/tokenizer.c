@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-Tokenizer tokenizer_init(const char *data, size_t length) {
+Tokenizer tokenizer_init(const char *data, unsigned int length) {
     Tokenizer tokenizer = {
             .data =data,
             .current_idx = 0,
@@ -16,7 +16,7 @@ Tokenizer tokenizer_init(const char *data, size_t length) {
     return tokenizer;
 }
 
-void tokenizer_seek(Tokenizer *tokenizer, size_t idx) {
+void tokenizer_seek(Tokenizer *tokenizer, unsigned  int idx) {
     tokenizer->current_idx = idx;
 }
 

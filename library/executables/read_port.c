@@ -2,11 +2,22 @@
 // Created by guust on 5/28/23.
 //
 
+#include <stdio.h>
+
+#ifdef _WIN32
+int main(){
+    printf("Port reader currently not supported for windows\n");
+    return 0;
+}
+#endif
+
+
+#ifdef linux
+
 #define SERIALTERMINAL      "/dev/ttyUSB0"
 
 #include <errno.h>
 #include <fcntl.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <dsmr/parser.h>
 #include <string.h>
@@ -116,3 +127,4 @@ int main() {
 
 }
 
+#endif

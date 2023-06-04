@@ -7,19 +7,20 @@
 
 #include <dsmr/types.h>
 
-#define  DSMR_PARSER_CAPACITY 4096
 
 typedef struct DSMR_Parser {
     char data_buffer[DSMR_PARSER_CAPACITY];
+    unsigned int current_idx;
 } DSMR_Parser;
 
 
-DSMR_Parser DSMR_parser_init(void);
+DSMR_Parser DSMR_parser_init(void (*complete_message)(t_parsing_result));
 
-void DSMR_parser_new_data(char* data, size_t length);
+void DSMR_parser_add_bytes(DSMR_Parser *parser, char *data, unsigned int length);
+int DSMR_parse_current_buffer(DSMR_Parser *parser, t_parsing_result* result_array);
 
 
-void parse_data(char *data, size_t length);
+int DSMR_parse_data(char *data, t_telegram* result, unsigned int length);
 
 void test_data();
 

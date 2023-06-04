@@ -6,16 +6,17 @@
 #define FLUVIUSSM_TYPES_H
 
 
-#define true	1
-#define false	0
-#define bool int
-#define size_t int
-
-
-
+#include <stdbool.h>
 
 #define SPECIFICATION_CAPACITY 100
-#define DATA_CAPACITY 100
+#define DSMR_DATA_CAPACITY 100
+#define DSMR_MAX_PACKET_SIZE 1024
+#define DSMR_PARSER_CAPACITY 4096
+
+typedef struct Range {
+    int start;
+    int end;
+} t_range;
 
 typedef struct TelegramMeasurementEntry {
     char value[100];
@@ -23,20 +24,25 @@ typedef struct TelegramMeasurementEntry {
 } t_telegram_measurement_entry;
 
 typedef struct TelegramData {
-    char first[100];
+    int initialized;
     char channel[100];
     char type[100];
-    t_telegram_measurement_entry entries[100];
+    //t_telegram_measurement_entry entries[100];
 } t_telegram_data;
 
 typedef struct Telegram {
     char model_specification[3];
     char identification[SPECIFICATION_CAPACITY];
-    t_telegram_data data[100];
+    t_telegram_data data[DSMR_DATA_CAPACITY];
+    int amount_of_data_entries;
+    char checksum[4];
+    int fully_parsed;
 } t_telegram;
 
 typedef struct ParsingResult {
-    t_telegram telegram;
+    char data[1024];
+    unsigned int length;
+    bool valid_checksum;
 } t_parsing_result;
 
 
